@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>IAちゃんかわいい</title>
+    <sctipt src="/webjars/sockjs-client/1.0.2/sockjs.js"/>
+    <script src="/webjars/stomp-websocket/2.3.3/stomp.js"/>
+    <script type="text/javascript">
+        var stompClient=null;
+        function setConnected(connected){
+            document.getElementById('connect').disabled = connected;
+            documeng.getElementById('disconnect').disabled = !connected;
+        }
+    </script>
+
+</head>
+<body>
+<p th:text="${size}">だーんぷ！</p><br/>
+<!--<img th:src="${image_file}"></img>-->
+<!--<img th:src="http://192.168.1.140:8080/?action=stream"></img>-->
+<div style="position: relative;">
+    <img src="http://localhost:8082/?action=stream" alt="topimg" />
+    <div style="position:absolute; top:50pt; left:30px; width: 430px;">
+        にゃーん
+    </div>
+</div>
+<br/>
+<pre><img src="http://localhost:8083/?action=stream"/></pre><br/>
+
+IAちゃんかわいいやったー
+<form th:action="@{/upload_image}" method="post" enctype="multipart/form-data">
+    <input type="file" name="file"></input>
+    <button type="submit">submit</button>
+</form>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Hello WebSocket</title>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script src="/webjars/sockjs-client/1.0.2/sockjs.js"></script>
+    <script src="/webjars/stomp-websocket/2.3.3/stomp.js"></script>
+    <script type="text/javascript">
+        var stompClient = null;
+
+        function setConnected(connected) {
+            document.getElementById('connect').disabled = connected;
+            document.getElementById('disconnect').disabled = !connected;
+            document.getElementById('conversationDiv').style.visibility = connected ? 'visible' : 'hidden';
+            document.getElementById('response').innerHTML = '';
+        }
+
+        function connect() {
+            var socket = new SockJS('/hello'); // WebSocketに接続
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function (frame) {
+                setConnected(true);
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/topic/greetings', function (greeting) { // 挨拶の応答(/topic/greetings)を購読する
+                    showGreeting(JSON.parse(greeting.body));
+                });
+            });
+        }
+
+        function disconnect() {
+            if (stompClient != null) {
+                stompClient.disconnect();
+            }
+            setConnected(false);
+            console.log("Disconnected");
+        }
+
+        function sendName() {
+            var name = document.getElementById('name').value;
+            stompClient.send("/app/hello", {}, JSON.stringify({'name': name})); // メッセージを送信
+        }
+
+        function showGreeting(body) {
+            var message=body.content;
+            var response = document.getElementById('response');
+            var p = document.createElement('p');
+            p.style.wordWrap = 'break-word';
+            p.appendChild(document.createTextNode(message));
+            response.appendChild(p);
+            document.getElementById("left_bar").style="width: "+message+"%;float:right;background-color:#00FF00;";
+        }
+    </script>
+</head>
+<body onload="disconnect()">
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+    enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+
+<div style="position: relative;">
+    <div style="position:relative; top:0;left:0;width:320px;">
+    <div id="prog-bar1" class="progress" style="width:320px;">
+        <div id="left_bar" class="progress-bar" style="width: 90%;float:right;background-color:#00FF00;"></div>
+    </div>
+        <img src="http://192.168.1.161:8082/?action=stream"/>
+    </div>
+    <div style="position:absolute; top:0;left:0;width:640;">
+        <p id="response1"></p>
+    </div>
+
+    <div style="position:absolute; top:0;left:400px;width:320px;">
+        <div id="prog-bar2" class="progress" style="width:320px;">
+            <div id="right_bar" class="progress-bar" style="width: 90%;float:left;background-color:#00FF00;"></div>
+        </div>
+        <img src="http://192.168.1.161:8082/?action=stream"/>
+    </div>
+    <div style="position:absolute; top:0;left:0;width:640;">
+        <p id="response2"></p>
+    </div>
+</div>
+
+<div>
+    <div>
+        <button id="connect" onclick="connect();">Connect</button>
+        <button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
+    </div>
+    <div id="conversationDiv">
+        <label>Message</label><input type="text" id="name"/>
+        <button id="sendName" onclick="sendName();">Send</button>
+        <p id="response"></p>
+    </div>
+</div>
+</body>
+</html>
