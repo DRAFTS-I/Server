@@ -1,12 +1,8 @@
 <!DOCTYPE html>
-<!--<html xmlns="http://www.w3.org/1999/xhtml">-->
 <html xmlns="w3.xhtml">
 <head>
-    <title>Hello WebSocket</title>
+    <title>LiteViewer</title>
     <meta charset="utf-8"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
     <script src="/webjars/sockjs-client/1.0.2/sockjs.js"></script>
     <script src="/webjars/stomp-websocket/2.3.3/stomp.js"></script>
@@ -45,17 +41,17 @@
         }
 
         function showMessage(body) {
-            var message=body.value;
 
             if(body.type==="time"){
-                var time=60000-body.value;
-                document.getElementById('timer').innerHTML="<h1><center>"+Math.round(time/1000)+"</center></h1>";
+                var time1=120000-body.value;
+                document.getElementById('timer1').innerHTML="<h1><center>"+Math.round(time1/1000)+"</center></h1>";
             }else{
-            var response = document.getElementById('response');
-            var p = document.createElement('p');
-            p.style.wordWrap = 'break-word';
-            p.appendChild(document.createTextNode(message));
-            response.insertBefore(p,response.firstChild);
+                var message=body.value;
+                var response = document.getElementById('response');
+                var p = document.createElement('p');
+                p.style.wordWrap = 'break-word';
+                p.appendChild(document.createTextNode(message));
+                response.insertBefore(p,response.firstChild);
             }
 
             if(body.type==="damage"){
@@ -70,6 +66,7 @@
                 document.getElementById(body.id+'_bar').style="width: "+message+"%;float:"+dir+";background-color:#"+color.toString(16)+";";
             }
         }
+
         $(function(){
             connect();
         });
@@ -83,32 +80,40 @@
 
 <div style="position: relative;">
     <div style="position:relative; top:0;left:0;width:45%;">
-        <div id="prog-bar1" class="progress" style="width:100%;">
-            <div id="left_bar" class="progress-bar" style="width: 100%;float:right;background-color:#00FF00;"></div>
-        </div>
         <img src="http://192.168.1.161:8070/?action=stream" style="width: 100%"/>
     </div>
-    <div id="timer" style="position:absolute; top:0;left:45%;width:10%;">
+    <div style="position:absolute; top:0;left:40%;width:100%;">
+        <h1 style="color:#FF0000">赤</h1>
+    </div>
+    <div id="timer1" style="position:absolute; top:0;left:45%;width:10%;">
         neko
     </div>
+    <!--<div id="timer2" style="position:absolute; top:90%;left:45%;width:10%;">-->
+        <!--neko-->
+    <!--</div>-->
 
     <div style="position:absolute; top:0;left:55%;width:45%;">
-        <div id="prot-bar2" class="progress" style="width:100%;">
-            <div id="right_bar" class="progress-bar" style="width: 100%;float:left;background-color:#00FF00;"></div>
-        </div>
         <img src="http://192.168.1.161:8071/?action=stream" style="width: 100%"/>
+    </div>
+    <div style="position:absolute; top:0;left:55.5%;width:45%;">
+        <h1 style="color:#0000FF">青</h1>
     </div>
 </div>
 
-<div>
+<div style="position:relative;">
     <div>
-        <button id="connect" onclick="connect();">Connect</button>
-        <button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
-    </div>
-    <div id="conversationDiv">
-        <label>Message</label><input type="text" id="name"/>
-        <button id="sendValue" onclick="sendValue();">Send</button>
-        <p id="response"></p>
+        <div style="position:absolute;top=0;">
+            <button id="connect" onclick="connect();">Connect</button>
+            <button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
+            <div id="conversationDiv">
+                <label>Message</label><input type="text" id="name"/>
+                <button id="sendValue" onclick="sendValue();">Send</button>
+                <p id="response"></p>
+            </div>
+        </div>
+        <h1><center>ASUSのアクセスポイントに繋いで<br/>
+            http://192.168.1.161:8080/lite<br/>
+            にアクセスすると見れるよ<br/></center></h1>
     </div>
 </div>
 </body>
